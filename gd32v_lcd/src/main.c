@@ -1,5 +1,6 @@
 #include "lcd/lcd.h"
 #include <string.h>
+//#include <math.h>
 
 void init_uart0(void)
 {
@@ -75,6 +76,29 @@ void draw_angle() {
   }
 }
 
+uint16_t RGB(const uint8_t red, const uint8_t green, uint8_t blue) {
+  return ((red & 0x1f) << 11) | ((green & 0x3f) << 5) | (blue & 0x1f);
+}
+
+const float PI = 3.1415926535f;
+const float PIh = PI / 2;
+const float sincos_tbl[1024] = {0.0f, 0.001f};
+const int sincos_tlb_len = sizeof(sincos_tbl) / sizeof(float);
+
+float m_cos(const float angle) {
+  int quadrant = angle / PIh;
+  float frac = angle - (quadrant * PIh); // now it is 0..PIh
+  if(!(quadrant & 1)) frac = PIh - frac; // go down for
+  // lookup the value
+  float cosval = sincos_tbl[(int)(sincos_tlb_len * frac)];
+  if(quadrant == 1 || quadrant == 2) cosval *= -1;
+  return cosval;
+}
+
+uint8_t rangedcos(const int value, const int inrange, const int outrange, const float cosmod) {
+  return (uint8_t)(outrange * (0.5 + 0.5 * m_cos(cosmod + (float)value / inrange)));
+}
+
 void draw_1d_ca(int rule) {
   int const width = 160;
   int const height = 80;
@@ -82,6 +106,9 @@ void draw_1d_ca(int rule) {
   uint8_t life_line[width];
   uint8_t life_line_next[width];
   uint8_t rules[8];
+  // const uint16_t colormap[] = {BLACK, WHITE, BLUE, BRED, GRED, GBLUE, RED, MAGENTA, GREEN, CYAN, YELLOW, BROWN, BRRED, GRAY, DARKBLUE, LIGHTBLUE, GRAYBLUE, LIGHTGREEN, LGRAY, LGRAYBLUE, LBBLUE };
+  // const int colormap_length = sizeof(colormap) / sizeof(uint16_t);
+  int cycle = 0;
 
   memset(life, 0, width * height);
   memset(life_line, 0, width);
@@ -115,11 +142,22 @@ void draw_1d_ca(int rule) {
     memcpy(life_line, life_line_next, width);
 
     LCD_Address_Set(0, 0, width - 1, height - 1);
+    
     for (int n = 0; n < width * height; ++n)
-      LCD_WR_DATA(life[n] ? BLUE : BLACK);
+      if(life[n]) {
+        // vec3 col = 0.5 + 0.5*cos(iTime+uv.xyx+vec3(0,2,4)); x and y are from 0 to 1
+        int x = n % width;
+        int y = n / width;
+        uint16_t col = RGB(rangedcos(x, width, 0x20, 0.0f + cycle), rangedcos(x, width, 0x40, 2.0f + cycle), rangedcos(y, height, 0x20, 4.0f + cycle));
+        LCD_WR_DATA(col);
+        //LCD_WR_DATA(colormap[(n + cycle) % (colormap_length - 1) + 1]);
+        //LCD_WR_DATA((((n & 0x7FF) + (cycle << 11)) & 0xFFFF) + 1);
+      } else {
+        LCD_WR_DATA(life[n] ? BLUE : BLACK);
+      }
+    cycle++;
   }
 }
-
 
 void draw_conway_life() {
   int const width = 160;
@@ -191,11 +229,13 @@ int main(void)
     Lcd_Init();			// init OLED
     LCD_Clear(BLACK);
 
-    // draw_angle();
-    // draw_mandel();
-    // draw_conway_life();
-    // draw_1d_ca(110);
-    draw_1d_ca(150);
+    // while(TRUE) {
+      // draw_angle();
+      //draw_mandel();
+      //draw_conway_life();
+      //draw_1d_ca(110);
+      draw_1d_ca(150);
+    //}
 }
 
 int _put_char(int ch)
