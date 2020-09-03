@@ -1,5 +1,6 @@
 #include "lcd/lcd.h"
 #include <string.h>
+#include <trig.h>
 //#include <math.h>
 
 void init_uart0(void)
@@ -87,6 +88,7 @@ const int sincos_tlb_len = sizeof(sincos_tbl) / sizeof(float);
 
 float m_cos(const float angle) {
   int quadrant = angle / PIh;
+  //float altCos = Trig::cos(angle);
   float frac = angle - (quadrant * PIh); // now it is 0..PIh
   if(!(quadrant & 1)) frac = PIh - frac; // go down for
   // lookup the value

@@ -33,19 +33,36 @@
 * nfact = 1
 */
 
-class Trig
-{
+#ifdef __cplusplus
+
+class Trig {
+protected:
+    const float sincos_tbl[1024] = {0.0f, 0.001f};
+    const int sincos_tlb_len = sizeof(sincos_tbl) / sizeof(float);
+
 public:
+    const float PI = 3.1415926535f;
+    const float PIh = PI / 2;
+
 	template <typename T>
 	static T CalcSin(T x);
 
-    template <typename T>
-    static T sin(T x);
-    template <typename T>
-    static T cos(T x);
-    template <typename T>
-    static T tan(T x);
+    
+    static double sin(double x);
+    static float sin(float x);
+    static double cos(double x);
+    static float cos(float x);
+    static double tan(double x);
+    static float tan(float x);
 
 	static void testSinCalc();
 };
 
+extern "C" {
+#endif
+
+float mbsin(float x);
+float mbcos(float x);
+#ifdef __cplusplus
+}
+#endif
