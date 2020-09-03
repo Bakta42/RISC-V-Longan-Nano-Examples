@@ -7,8 +7,8 @@
 #include <cstdint>
 #include <chrono>
 #define _USE_MATH_DEFINES
-#include <math.h>
-// #include <cmath>
+//#include <math.h>
+#include <cmath>
 // #include <iostream>
 
 template <typename T>
@@ -76,6 +76,8 @@ T testSinCalcExec(uint32_t iterations) {
 // }
 
 float Trig::cos(float x) {
+	float trigFract = fmodf(x, M_PI);
+	int segment = (int)(x / M_PI);
 	return 1.0f;
 }
 
@@ -113,7 +115,7 @@ void Trig::testSinCalc()
 }
 
 extern "C" {
-	float mbsin(float x) {
+	float mbcos(float x) {
 		return Trig::cos(x);
 	}
 }
