@@ -98,7 +98,7 @@ float m_cos(const float angle) {
 }
 
 uint8_t rangedcos(const int value, const int inrange, const int outrange, const float cosmod) {
-  return (uint8_t)(outrange * (0.5 + 0.5 * m_cos(cosmod + (float)value / inrange)));
+  return (uint8_t)(outrange * (0.5 + 0.5 * mbcos(cosmod + (float)value / inrange)));
 }
 
 void draw_1d_ca(int rule) {

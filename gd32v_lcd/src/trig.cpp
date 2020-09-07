@@ -5,7 +5,7 @@
 #include "trig.h"
 
 #include <cstdint>
-#include <chrono>
+//#include <chrono>
 #define _USE_MATH_DEFINES
 //#include <math.h>
 #include <cmath>
@@ -76,42 +76,43 @@ T testSinCalcExec(uint32_t iterations) {
 // }
 
 float Trig::cos(float x) {
-	float trigFract = fmodf(x, M_PI);
-	int segment = (int)(x / M_PI);
-	return 1.0f;
+	float fract = std::abs(std::fmod(x, M_PI)) - M_PI_2;
+    bool piCountEven = ((int)(x / M_PI)) % 2 == 0;
+	if(piCountEven) fract = -fract;
+	return sin6(fract);
 }
 
 void Trig::testSinCalc()
 {
-	const uint32_t iterations = 1000000;
-	double testX = 0;
-	// CalcSine float
-	auto begin = std::chrono::high_resolution_clock::now();
-	testX = testSinCalcExec<float>(iterations);
-	auto end = std::chrono::high_resolution_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count();
-//	std::cout << "Float sin(x) test: " << duration << "ns total, average : " << duration / iterations << "ns." << " test Value: " << testX << std::endl;
+// 	const uint32_t iterations = 1000000;
+// 	double testX = 0;
+// 	// CalcSine float
+// 	auto begin = std::chrono::high_resolution_clock::now();
+// 	testX = testSinCalcExec<float>(iterations);
+// 	auto end = std::chrono::high_resolution_clock::now();
+// 	auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count();
+// //	std::cout << "Float sin(x) test: " << duration << "ns total, average : " << duration / iterations << "ns." << " test Value: " << testX << std::endl;
 
-	// // float sin built-in
-	// begin = std::chrono::high_resolution_clock::now();
-	// testX = testSinCPU<float>(iterations);
-	// end = std::chrono::high_resolution_clock::now();
-	// duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count();
-	// std::cout << "Float(lib) sin(x) test: " << duration << "ns total, average : " << duration / iterations << "ns." << " test Value: " << testX << std::endl;
+// 	// // float sin built-in
+// 	// begin = std::chrono::high_resolution_clock::now();
+// 	// testX = testSinCPU<float>(iterations);
+// 	// end = std::chrono::high_resolution_clock::now();
+// 	// duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count();
+// 	// std::cout << "Float(lib) sin(x) test: " << duration << "ns total, average : " << duration / iterations << "ns." << " test Value: " << testX << std::endl;
 
-	// double sin calculated
-	begin = std::chrono::high_resolution_clock::now();
-	testX = testSinCalcExec<double>(iterations);
-	end = std::chrono::high_resolution_clock::now();
-	duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count();
-//	std::cout << "Double sin(x) test: " << duration << "ns total, average : " << duration / iterations << "ns." << " test Value: " << testX << std::endl;
+// 	// double sin calculated
+// 	begin = std::chrono::high_resolution_clock::now();
+// 	testX = testSinCalcExec<double>(iterations);
+// 	end = std::chrono::high_resolution_clock::now();
+// 	duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count();
+// //	std::cout << "Double sin(x) test: " << duration << "ns total, average : " << duration / iterations << "ns." << " test Value: " << testX << std::endl;
 
-	// // double sin built-in
-	// begin = std::chrono::high_resolution_clock::now();
-	// testX = testSinCPU<double>(iterations);
-	// end = std::chrono::high_resolution_clock::now();
-	// duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count();
-	// std::cout << "Double(lib) sin(x) test: " << duration << "ns total, average : " << duration / iterations << "ns." << " test Value: " << testX << std::endl;
+// 	// // double sin built-in
+// 	// begin = std::chrono::high_resolution_clock::now();
+// 	// testX = testSinCPU<double>(iterations);
+// 	// end = std::chrono::high_resolution_clock::now();
+// 	// duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count();
+// 	// std::cout << "Double(lib) sin(x) test: " << duration << "ns total, average : " << duration / iterations << "ns." << " test Value: " << testX << std::endl;
 }
 
 extern "C" {
