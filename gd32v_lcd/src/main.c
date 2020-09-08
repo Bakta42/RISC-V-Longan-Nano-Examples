@@ -150,7 +150,7 @@ void draw_1d_ca(int rule) {
         // vec3 col = 0.5 + 0.5*cos(iTime+uv.xyx+vec3(0,2,4)); x and y are from 0 to 1
         int x = n % width;
         int y = n / width;
-        uint16_t col = RGB(rangedcos(x, width, 0x20, 0.0f + cycle), rangedcos(x, width, 0x40, 2.0f + cycle), rangedcos(y, height, 0x20, 4.0f + cycle));
+        uint16_t col = RGB(rangedcos(x, width, 0x20, cycle * 0.2f), rangedcos(x, width, 0x40, 2.0f + cycle * 0.25f), rangedcos(y, height, 0x20, 4.0f + cycle * 0.15f));
         LCD_WR_DATA(col);
         //LCD_WR_DATA(colormap[(n + cycle) % (colormap_length - 1) + 1]);
         //LCD_WR_DATA((((n & 0x7FF) + (cycle << 11)) & 0xFFFF) + 1);
