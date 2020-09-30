@@ -160,10 +160,11 @@ inline int remapint(const int value, const int inmax, const int outmax) {
 int32_t rangedcos_i(const int angle, const int inrange, const int outrange) {
   int result;
   int x = angle;
+  int pihalflen = (inrange / 4);  // Inrange is 2PI len
   if (angle < 0) x = -angle;
-  int remnantPIhalf = x % (inrange / 4);
-  int quarter2PI = (x / (inrange / 4)) % 4;
-  int x_tblIndex = remnantPIhalf * sincos_tbli_len / (inrange / 4);
+  int remnantPIhalf = x % pihalflen;
+  int quarter2PI = (x / pihalflen) % 4;
+  int x_tblIndex = remnantPIhalf * sincos_tbli_len / pihalflen;
   switch (quarter2PI) {
     case 0: result = sincos_tbli[sincos_tbli_len - x_tblIndex - 1]; break;
     case 1: result = -sincos_tbli[x_tblIndex]; break;
@@ -173,6 +174,10 @@ int32_t rangedcos_i(const int angle, const int inrange, const int outrange) {
   }
   result = result * outrange / 16777216;
   return result;
+}
+
+uint32_t rangedcos_u(const int angle, const int inrange, const int outrange) {
+  return rangedcos_i(angle, inrange, outrange / 2) + outrange / 2;
 }
 
 uint8_t rangedcos(const int value, const int inrange, const int outrange, const float cosmod) {
@@ -230,7 +235,7 @@ void draw_1d_ca(int rule) {
         int x = n % width;
         int y = n / width;
         //uint16_t col = RGB(rangedcos(x, width, 0x20, cycle * 0.2f), rangedcos(x, width, 0x40, 2.0f + cycle * 0.25f), rangedcos(y, height, 0x20, 4.0f + cycle * 0.15f));
-        uint16_t col = RGB(rangedcos_i(x + cycle / 5, width * 5, 0x20), rangedcos_i(x + cycle / 4, width * 5, 0x40), rangedcos_i(y + cycle / 7, height * 5, 0x20));
+        uint16_t col = RGB(rangedcos_u(x + cycle / 2, width * 2, 0x20), rangedcos_u(x + cycle, width * 2, 0x40), rangedcos_u(y + cycle / 3, height * 2, 0x20));
         LCD_WR_DATA(col);
         //LCD_WR_DATA(colormap[(n + cycle) % (colormap_length - 1) + 1]);
         //LCD_WR_DATA((((n & 0x7FF) + (cycle << 11)) & 0xFFFF) + 1);

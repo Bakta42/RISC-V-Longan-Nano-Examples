@@ -274,7 +274,7 @@ void init_timer2(void)
     \param[out] none
     \retval     none
 */
-static
+//static
 void tfcard_timer_irq (void)
 {
     if (RESET != timer_flag_get(TIMER2, TIMER_FLAG_UP)){
