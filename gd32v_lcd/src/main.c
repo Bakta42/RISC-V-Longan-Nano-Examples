@@ -235,7 +235,7 @@ void draw_1d_ca(int rule) {
         int x = n % width;
         int y = n / width;
         //uint16_t col = RGB(rangedcos(x, width, 0x20, cycle * 0.2f), rangedcos(x, width, 0x40, 2.0f + cycle * 0.25f), rangedcos(y, height, 0x20, 4.0f + cycle * 0.15f));
-        uint16_t col = RGB(rangedcos_u(x + cycle / 2, width * 2, 0x20), rangedcos_u(x + cycle, width * 2, 0x40), rangedcos_u(y + cycle / 3, height * 2, 0x20));
+        uint16_t col = RGB(rangedcos_u(x + cycle / 2, width * 2, 0x20), rangedcos_u(x + cycle * 4 / 5, width * 2, 0x40), rangedcos_u(y + cycle / 3, height * 2, 0x20));
         LCD_WR_DATA(col);
         //LCD_WR_DATA(colormap[(n + cycle) % (colormap_length - 1) + 1]);
         //LCD_WR_DATA((((n & 0x7FF) + (cycle << 11)) & 0xFFFF) + 1);
